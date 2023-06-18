@@ -28,7 +28,8 @@ regex_Provided_to_Youtube_inner_line0a = 'by (.+)'
 regex_Provided_to_Youtube_inner_line0b = '(.+)'
 regex_Provided_to_Youtube_inner_line2 = '(.+) · (.+)'
 regex_Provided_to_Youtube_inner_line4 = '(.+)'
-regex_Provided_to_Youtube_inner_line6 = '℗ ([0-9]{4}) (.+)'
+regex_Provided_to_Youtube_inner_line6a = '℗ ([0-9]{4}) (.+)'
+regex_Provided_to_Youtube_inner_line6b = '℗ (.+)'
 regex_TableFormat1 = '\[\{"infoRowRenderer":\{"title":\{"simpleText":"TITEL"\},"defaultMetadata":\{"runs":\[\{"text":"(.+)","navigationEndpoint":\{"clickTrackingParams":".*","commandMetadata":\{"webCommandMetadata":\{"url":".*","webPageType":".*","rootVe":.*\}\},"watchEndpoint":\{"videoId":".*","watchEndpointSupportedOnesieConfig":\{"html5PlaybackOnesieConfig":\{"commonConfig":\{"url":".*"\}\}\}\}\}\}\]\},"trackingParams":".*"\}\},\{"infoRowRenderer":\{"title":\{"simpleText":"INTERPRET"\},"defaultMetadata":\{"simpleText":"(.+)"\},"trackingParams":".*","infoRowExpandStatusKey":"structured-description-music-section-artists-row-state-id"\}\},\{"infoRowRenderer":\{"title":\{"simpleText":"ALBUM"\},"defaultMetadata":\{"simpleText":"(.+)"\},"trackingParams":".*"\}\},\{"infoRowRenderer":\{"title":\{"simpleText":"LIZENZEN"\}'
 regex_TableFormat2 = '\[\{"infoRowRenderer":\{"title":\{"simpleText":"TITEL"},"defaultMetadata":\{"simpleText":"(.+?)"},"trackingParams":".*"}},\{"infoRowRenderer":\{"title":\{"simpleText":"INTERPRET"},"defaultMetadata":\{"simpleText":"(.+?)"},"trackingParams":".*","infoRowExpandStatusKey":".*"}},\{"infoRowRenderer":\{"title":\{"simpleText":"LIZENZEN"}'
 foo01 = '"videoDetails":\{"videoId":"[a-zA-Z0-9]+","title":".+","lengthSeconds":"[0-9]*","keywords":\[.*\],"channelId":"[a-zA-Z0-9_\-]+","isOwnerViewing":.+,"shortDescription":"P'
@@ -114,10 +115,15 @@ def scrapForMetatags_Provided_to_Youtube(line):
         innermatch = re.search(regex_Provided_to_Youtube_inner_line4, desclines[4])
         if innermatch:
             result["album"]   = innermatch.group(1)
-        innermatch = re.search(regex_Provided_to_Youtube_inner_line6, desclines[6])
+        innermatch = re.search(regex_Provided_to_Youtube_inner_line6a, desclines[6])
         if innermatch:
             result["year"]    = innermatch.group(1)
             result["company"] = innermatch.group(2)
+        else:
+            innermatch = re.search(regex_Provided_to_Youtube_inner_line6b, desclines[6])
+            if innermatch:
+                result["year"]    = ""	# no year
+                result["company"] = innermatch.group(1)
         return result
     #else:
     #    print("scrapForMetatags_Provided_to_Youtube: outer regex doesn't match")
